@@ -9,8 +9,11 @@ namespace AwesomeTestLogger
     [FriendlyName("AwesomeLogger")]
     public class TestLogger : ITestLogger
     {
+        public static TestFormatter Formatter = new TestFormatter();
+
         public void Initialize(TestLoggerEvents events, string testRunDirectory)
         {
+            Console.WriteLine("Running tests in {0}", testRunDirectory);
             events.TestRunMessage += OnTestRunMessage;
             events.TestRunComplete += OnTestRunComplete;
             events.TestResult += OnTestResult;
@@ -18,12 +21,26 @@ namespace AwesomeTestLogger
 
         private void OnTestRunMessage(object sender, TestRunMessageEventArgs e)
         {
-            // ?
+            switch (e.Level)
+            {
+                case TestMessageLevel.Informational:
+                    break;
+                case TestMessageLevel.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case TestMessageLevel.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            Console.WriteLine(e.Message);
+            Console.ResetColor();
         }
 
         private void OnTestRunComplete(object sender, TestRunCompleteEventArgs e)
         {
-            // complete test run
             Console.WriteLine();
             Console.WriteLine();
 
@@ -40,22 +57,12 @@ namespace AwesomeTestLogger
 
             switch (result.Outcome)
             {
-                case TestOutcome.None:
-                    break;
                 case TestOutcome.Passed:
-                    Console.Write(".");
+                    Formatter.WriteSuccess();
                     break;
                 case TestOutcome.Failed:
-                    Console.Write("F");
+                    Formatter.WriteFailed();
                     break;
-                case TestOutcome.Skipped:
-                    Console.WriteLine("S");
-                    break;
-                case TestOutcome.NotFound:
-                    Console.WriteLine("?");
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
     }
