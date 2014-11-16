@@ -9,7 +9,7 @@ namespace AwesomeTestLogger
     [FriendlyName("AwesomeLogger")]
     public class TestLogger : ITestLogger
     {
-        public static TestFormatter Formatter = new TestFormatter();
+        public static OutputFormatter Formatter = new OutputFormatter();
         public static FailedTestCollector Collector = new FailedTestCollector(Formatter);
 
         public void Initialize(TestLoggerEvents events, string testRunDirectory)

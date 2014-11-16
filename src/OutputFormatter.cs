@@ -2,7 +2,7 @@
 
 namespace AwesomeTestLogger
 {
-    public class TestFormatter
+    public class OutputFormatter
     {
         private const int ColumnWidth = 78;
         private int _column = 0;

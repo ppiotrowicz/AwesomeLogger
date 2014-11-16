@@ -6,10 +6,10 @@ namespace AwesomeTestLogger
 {
     public class FailedTestCollector
     {
-        private readonly TestFormatter _formatter;
+        private readonly OutputFormatter _formatter;
         private readonly IList<TestResult> _results = new List<TestResult>();
 
-        public FailedTestCollector(TestFormatter formatter)
+        public FailedTestCollector(OutputFormatter formatter)
         {
             _formatter = formatter;
         }
