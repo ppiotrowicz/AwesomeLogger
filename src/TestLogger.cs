@@ -10,6 +10,7 @@ namespace AwesomeTestLogger
     public class TestLogger : ITestLogger
     {
         public static TestFormatter Formatter = new TestFormatter();
+        public static FailedTestCollector Collector = new FailedTestCollector();
 
         public void Initialize(TestLoggerEvents events, string testRunDirectory)
         {
@@ -49,6 +50,9 @@ namespace AwesomeTestLogger
             Console.WriteLine("Failed:  {0}", e.TestRunStatistics[TestOutcome.Failed]);
             Console.WriteLine();
             Console.WriteLine("Total time: {0}", e.ElapsedTimeInRunningTests);
+            Console.WriteLine();
+            Console.WriteLine("Errors:");
+            Collector.WriteSummary();
         }
 
         private void OnTestResult(object sender, TestResultEventArgs e)
@@ -62,6 +66,7 @@ namespace AwesomeTestLogger
                     break;
                 case TestOutcome.Failed:
                     Formatter.WriteFailed();
+                    Collector.Collect(e.Result);
                     break;
             }
         }
