@@ -41,6 +41,7 @@ namespace AwesomeTestLogger
             Formatter.WriteLine("All: {0}", e.TestRunStatistics.ExecutedTests);
             Formatter.WriteLine("Passed:  {0}", e.TestRunStatistics[TestOutcome.Passed]);
             Formatter.WriteLine("Failed:  {0}", e.TestRunStatistics[TestOutcome.Failed]);
+            Formatter.WriteLine("Not found: {0}, Skipped: {1}", e.TestRunStatistics[TestOutcome.NotFound], e.TestRunStatistics[TestOutcome.Skipped]);
             Formatter.NewLine();
             Formatter.WriteLine("Total time: {0}", e.ElapsedTimeInRunningTests);
             Formatter.NewLine();
