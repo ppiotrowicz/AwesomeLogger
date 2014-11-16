@@ -10,11 +10,11 @@ namespace AwesomeTestLogger
     public class TestLogger : ITestLogger
     {
         public static TestFormatter Formatter = new TestFormatter();
-        public static FailedTestCollector Collector = new FailedTestCollector();
+        public static FailedTestCollector Collector = new FailedTestCollector(Formatter);
 
         public void Initialize(TestLoggerEvents events, string testRunDirectory)
         {
-            Console.WriteLine("Running tests in {0}", testRunDirectory);
+            Formatter.WriteLine("Running tests in {0}", testRunDirectory);
             events.TestRunMessage += OnTestRunMessage;
             events.TestRunComplete += OnTestRunComplete;
             events.TestResult += OnTestResult;
@@ -25,33 +25,32 @@ namespace AwesomeTestLogger
             switch (e.Level)
             {
                 case TestMessageLevel.Informational:
+                    Formatter.WriteLine(e.Message);
                     break;
                 case TestMessageLevel.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Formatter.WriteLine(ConsoleColor.Yellow, e.Message);
                     break;
                 case TestMessageLevel.Error:
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Formatter.WriteLine(ConsoleColor.Red, e.Message);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            Console.WriteLine(e.Message);
-            Console.ResetColor();
         }
 
         private void OnTestRunComplete(object sender, TestRunCompleteEventArgs e)
         {
-            Console.WriteLine();
-            Console.WriteLine();
+            Formatter.NewLine();
+            Formatter.NewLine();
 
-            Console.WriteLine("All: {0}",  e.TestRunStatistics.ExecutedTests);
-            Console.WriteLine("Passed:  {0}", e.TestRunStatistics[TestOutcome.Passed]);
-            Console.WriteLine("Failed:  {0}", e.TestRunStatistics[TestOutcome.Failed]);
-            Console.WriteLine();
-            Console.WriteLine("Total time: {0}", e.ElapsedTimeInRunningTests);
-            Console.WriteLine();
-            Console.WriteLine("Errors:");
+            Formatter.WriteLine("All: {0}",  e.TestRunStatistics.ExecutedTests);
+            Formatter.WriteLine("Passed:  {0}", e.TestRunStatistics[TestOutcome.Passed]);
+            Formatter.WriteLine("Failed:  {0}", e.TestRunStatistics[TestOutcome.Failed]);
+            Formatter.NewLine();
+
+            Formatter.WriteLine("Total time: {0}", e.ElapsedTimeInRunningTests);
+            Formatter.NewLine();
+            Formatter.WriteLine("Errors:");
             Collector.WriteSummary();
         }
 

@@ -9,15 +9,27 @@ namespace AwesomeTestLogger
 
         public void WriteSuccess()
         {
-            Write(".", ConsoleColor.Green);
+            WriteTestOutput(".", ConsoleColor.Green);
         }
         
         public void WriteFailed()
         {
-            Write("F", ConsoleColor.Red);
+            WriteTestOutput("F", ConsoleColor.Red);
         }
 
-        private void Write(string output, ConsoleColor color)
+        public void WriteLine(ConsoleColor color, string text, params object[] obj)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(text, obj);
+            Console.ResetColor();
+        }
+
+        public void WriteLine(string text, params object[] obj)
+        {
+            Console.WriteLine(text, obj);
+        }
+
+        private void WriteTestOutput(string output, ConsoleColor color)
         {
             if (ShouldGoToNewLine())
             {
@@ -31,7 +43,7 @@ namespace AwesomeTestLogger
             _column++;
         }
 
-        private void NewLine()
+        public void NewLine()
         {
             Console.WriteLine();
             _column = 0;

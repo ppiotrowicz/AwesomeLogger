@@ -6,7 +6,13 @@ namespace AwesomeTestLogger
 {
     public class FailedTestCollector
     {
-        readonly IList<TestResult> _results = new List<TestResult>();
+        private readonly TestFormatter _formatter;
+        private readonly IList<TestResult> _results = new List<TestResult>();
+
+        public FailedTestCollector(TestFormatter formatter)
+        {
+            _formatter = formatter;
+        }
 
         public void Collect(TestResult result)
         {
@@ -23,27 +29,23 @@ namespace AwesomeTestLogger
             });
         }
 
-        private static void ShowTestName(int i, TestResult result)
+        private void ShowTestName(int i, TestResult result)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("{0}) {1}", i + 1, result.TestCase);
-            Console.ResetColor();
-            Console.WriteLine();
+            _formatter.WriteLine(ConsoleColor.Red, "{0}) {1}", i + 1, result.TestCase);
+            _formatter.NewLine();
         }
 
-        private static void ShowErrorMessage(TestResult result)
+        private void ShowErrorMessage(TestResult result)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(result.ErrorMessage.Indent(4));
-            Console.ResetColor();
-            Console.WriteLine();
+            _formatter.WriteLine(ConsoleColor.Yellow, result.ErrorMessage.Indent(4));
+            _formatter.NewLine();
         }
 
-        private static void ShowStackTrace(TestResult result)
+        private void ShowStackTrace(TestResult result)
         {
-            Console.WriteLine("Stack trace:".Indent(4));
-            Console.WriteLine(result.ErrorStackTrace.Substring(1).Indent(3));
-            Console.WriteLine();
+            _formatter.WriteLine("Stack trace:".Indent(4));
+            _formatter.WriteLine(result.ErrorStackTrace.Substring(1).Indent(3));
+            _formatter.NewLine();
         }
     }
 }
