@@ -1,0 +1,8 @@
+*ReSharper*
+TestResults
+*.log
+*.sln.cache
+*.suo
+*.user
+[Bb]in
+obj
