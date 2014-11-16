@@ -10,6 +10,7 @@ namespace AwesomeTestLogger
     public class TestLogger : ITestLogger
     {
         public static OutputFormatter Formatter = new OutputFormatter();
+        public static MessageHandler MessageHandler = new MessageHandler(Formatter);
         public static FailedTestCollector Collector = new FailedTestCollector(Formatter);
 
         public void Initialize(TestLoggerEvents events, string testRunDirectory)
@@ -22,20 +23,7 @@ namespace AwesomeTestLogger
 
         private void OnTestRunMessage(object sender, TestRunMessageEventArgs e)
         {
-            switch (e.Level)
-            {
-                case TestMessageLevel.Informational:
-                    Formatter.WriteLine(e.Message);
-                    break;
-                case TestMessageLevel.Warning:
-                    Formatter.WriteLine(ConsoleColor.Yellow, e.Message);
-                    break;
-                case TestMessageLevel.Error:
-                    Formatter.WriteLine(ConsoleColor.Red, e.Message);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            MessageHandler.Handle(e.Level, e.Message);
         }
 
         private void OnTestRunComplete(object sender, TestRunCompleteEventArgs e)
@@ -43,19 +31,25 @@ namespace AwesomeTestLogger
             Formatter.NewLine();
             Formatter.NewLine();
 
-            Formatter.WriteLine("All: {0}",  e.TestRunStatistics.ExecutedTests);
+            WriteSummary(e);
+            MessageHandler.WriteSummary();
+            Collector.WriteSummary();
+        }
+
+        private static void WriteSummary(TestRunCompleteEventArgs e)
+        {
+            Formatter.WriteLine("All: {0}", e.TestRunStatistics.ExecutedTests);
             Formatter.WriteLine("Passed:  {0}", e.TestRunStatistics[TestOutcome.Passed]);
             Formatter.WriteLine("Failed:  {0}", e.TestRunStatistics[TestOutcome.Failed]);
             Formatter.NewLine();
-
             Formatter.WriteLine("Total time: {0}", e.ElapsedTimeInRunningTests);
             Formatter.NewLine();
-            Formatter.WriteLine("Errors:");
-            Collector.WriteSummary();
         }
 
         private void OnTestResult(object sender, TestResultEventArgs e)
         {
+            MessageHandler.TestsStarted();
+
             var result = e.Result;
 
             switch (result.Outcome)

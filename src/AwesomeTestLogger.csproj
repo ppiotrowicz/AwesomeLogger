@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Extensions.cs" />
     <Compile Include="FailedTestCollector.cs" />
+    <Compile Include="MessageHandler.cs" />
     <Compile Include="OutputFormatter.cs" />
     <Compile Include="TestLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

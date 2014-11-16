@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 
 namespace AwesomeTestLogger
@@ -21,6 +22,10 @@ namespace AwesomeTestLogger
 
         public void WriteSummary()
         {
+            if (!_results.Any())
+                return;
+
+            _formatter.WriteLine("Errors:");
             _results.Apply((result, i) =>
             {
                 ShowTestName(i, result);
